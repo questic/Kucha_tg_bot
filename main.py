@@ -50,8 +50,26 @@ def stat(update: Update, context: CallbackContext):
     update.message.reply_text(f"Статистика всего канала.\nОбщее число участников канала: {members_count}\nКоличество сообщений в канале: {total_messages}")
 
 def stat_user(update: Update, context: CallbackContext):
-    # TODO: реализовать статистику по конкретному пользователю
-    update.message.reply_text('Статистика по пользователю:')
+    username = update.message.text.split(' ')[1]
+    conn = sqlite3.connect('messages.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM messages WHERE username=?", (username,))
+    message_count = cursor.fetchone()[0]
+
+    cursor.execute("SELECT message FROM messages WHERE username=?", (username,))
+    messages = cursor.fetchall()
+
+    word_counts = {}
+    for message in messages:
+        words = message[0].split()
+        for word in words:
+            word_counts[word] = word_counts.get(word, 0) + 1
+
+    most_usage_word = max(word_counts, key=word_counts.get)
+
+    update.message.reply_text(f"Статистика по пользователю {username}\nКоличество сообщений: {message_count}\nСамое частое слово в сообщениях: {most_usage_word}")
+
+    conn.close()
 
 def main():
     updater = Updater(os.getenv('TELEGRAM_TOKEN'), use_context=True)
