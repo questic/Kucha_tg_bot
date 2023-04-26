@@ -1,12 +1,16 @@
 import os
 import logging
+import openai
 from telegram.ext import (
     CommandHandler,
     MessageHandler,
     filters,
     ApplicationBuilder,
 )
-from os.path import join, dirname
+from os.path import (
+    join,
+    dirname,
+)
 from dotenv import load_dotenv
 
 from handlers import (
@@ -27,8 +31,10 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    token = os.getenv('TELEGRAM_TOKEN')
-    application = ApplicationBuilder().token(token).build()
+    telegram_token = os.getenv('TELEGRAM_TOKEN')
+    openai_key = os.getenv('OPENAI_KEY')
+    openai.api_key = openai_key
+    application = ApplicationBuilder().token(telegram_token).build()
 
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('help', help))
