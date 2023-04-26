@@ -1,6 +1,5 @@
 import os
 import logging
-import openai
 from telegram.ext import (
     CommandHandler,
     MessageHandler,
