@@ -6,12 +6,24 @@ from telegram.ext import (
 
 from models import Session, User, Message
 from sqlalchemy import func
+
+
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+async def generate_text(update: Update, context: CallbackContext):):	
+    input_text = update.message.text
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=input_text,
+        max_tokens=500,
+        n=1,
+        stop=None,
+        temperature=0.5,
+    )
+    await context.bot.send_message(chat_id=update.message.chat_id, text=response.choices[0].text)
 
-async def add_message(update, context):
-    print('add_message called')
+async def add_message(update: Update, context: CallbackContext):
     logging.info('Received message from %s in chat %s: %s', update.message.from_user.username, update.message.chat_id,
                  update.message.text)
     if update.message.text:
