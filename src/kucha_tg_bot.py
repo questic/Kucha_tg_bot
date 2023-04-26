@@ -40,8 +40,8 @@ def main():
     application.add_handler(CommandHandler('help', help))
     application.add_handler(CommandHandler('stat', stat))
     application.add_handler(CommandHandler('stat_user', stat_user))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.regex('^Куча'), add_message))
-    application.add_handler(MessageHandler(filters.regex('^Куча, подскажи*'), generate_text))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.Regex('^Куча'), add_message))
+    application.add_handler(MessageHandler(filters.Regex('^Куча, подскажи*'), generate_text))
     application.run_polling()
 
 
